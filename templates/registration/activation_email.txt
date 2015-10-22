@@ -1,0 +1,12 @@
+{% load i18n %}
+{% trans "Activate account at" %} {{ site.name }}:
+
+Hello there!
+
+Click the link below to activate your account.
+http://{{ site.domain }}{% url 'registration_activate' activation_key %}
+http://example.com/accounts/activate/f76a0593e8270640c1c36bb91394861b4751be53
+
+{% blocktrans %}Link is valid for {{ expiration_days }} days.{% endblocktrans %}
+
+-QSourceTeam

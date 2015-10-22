@@ -1,0 +1,9 @@
+<h1>{{ question.question_text }}</h1>
+
+<ul>
+
+<li>{{ question.ans1_text }} -- {{ question.ans1_votes}} vote{{ question.ans1_votes|pluralize }}</li>
+<li>{{ question.ans2_text }} -- {{ question.ans2_votes}} vote{{ question.ans2_votes|pluralize }}</li>
+</ul>
+
+<a href="{% url 'polls:index' %}">Back to feed</a>
