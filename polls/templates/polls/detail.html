@@ -1,0 +1,15 @@
+<h1>{{ question.question_text }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'polls:vote' question.id %}" method="post">
+{% csrf_token %}
+
+<input type="radio" name="ans" id=1 value=0 />
+<label for=1>{{ question.ans1_text }}</label><br />
+
+<input type="radio" name="ans" id=2 value=1 />
+<label for=2>{{ question.ans2_text }}</label><br />
+
+<input type="submit" value="Vote" />
+</form>
