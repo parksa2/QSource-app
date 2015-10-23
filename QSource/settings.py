@@ -29,7 +29,7 @@ ALLOWED_HOSTS = []
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'qsourceapp@gmail.com' #official qsource email
-EMAIL_HOST_PASSWORD = 'thenightwatch'
+EMAIL_HOST_PASSWORD = 'password goes here'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -103,7 +103,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'EST'
 
 USE_I18N = True
 
