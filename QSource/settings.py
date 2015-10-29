@@ -103,7 +103,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'EST'
 
 USE_I18N = True
 
@@ -135,4 +135,4 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 ACCOUNT_ACTIVATION_DAYS = 7 #time for users to activate account
 REGISTRATION_AUTO_LOGIN = True
 SITE_ID = 1
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/polls/'

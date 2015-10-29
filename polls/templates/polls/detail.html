@@ -1,15 +1,50 @@
-<h1>{{ question.question_text }}</h1>
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% include 'head_css.html' %}
+{% include 'navbar.html' %}
+{% include "javascript.html" %}
 
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<style>
+{% block style %}
+.navbar-static-top{
+    margin-bottom: 0px !important;
+}
+ .jumbotron {
+    background-color:#0C0547;
+    color: #FFF;
+ }
 
-<form action="{% url 'polls:vote' question.id %}" method="post">
-{% csrf_token %}
+{% endblock %}   
+</style>
 
-<input type="radio" name="ans" id=1 value=0 />
-<label for=1>{{ question.ans1_text }}</label><br />
+{% block jumbotron %}
+<div class="jumbotron">
+    <div class="container">
+    <div class="row">
+        <div class='col-sm-6'>
+        
 
-<input type="radio" name="ans" id=2 value=1 />
-<label for=2>{{ question.ans2_text }}</label><br />
+        <h2>{{ question.question_text }}</h2>
+        
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<input type="submit" value="Vote" />
-</form>
+        <form action="{% url 'polls:vote' question.id %}" method="post">
+        {% csrf_token %}        
+
+        <input type="radio" name="ans" id=1 value=0 />        
+        <label for=1>{{ question.ans1_text }}</label><br />
+
+        <input type="radio" name="ans" id=2 value=1 />
+        <label for=2>{{ question.ans2_text }}</label><br />
+        <p>
+        <input class='btn btn-default' type='submit' value='Vote' />
+        <i class="fa fa-question-circle"></i>  <!-- Question icon -->
+        </p>
+        
+        </form>
+        </div>        
+        </div>
+    </div>
+ </div
+
+{% endblock %}

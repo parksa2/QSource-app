@@ -4,6 +4,7 @@ from django.shortcuts import render
 from .forms import ContactForm, SignUpForm
 
 # Create your views here.
+
 def home(request):
     title = 'Sign Up' 
     #if request.user.is_authenticated():
@@ -18,7 +19,8 @@ def home(request):
     context = {
         "title": title,
         "form": form
-    }   
+    }
+    return render(request, "home.html", context)
     
     if form.is_valid():
         #form.save()
@@ -70,3 +72,4 @@ def contact(request):
     }
     
     return render(request, "forms.html", context)
+    

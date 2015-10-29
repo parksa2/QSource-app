@@ -1,13 +1,46 @@
 {% load staticfiles %}
+{% load crispy_forms_tags %}
+{% include 'head_css.html' %}
+{% include 'navbar.html' %}
+{% include "javascript.html" %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" />
+<style>
+{% block style %}
+.navbar-static-top{
+    margin-bottom: 0px !important;
+}
+ .jumbotron {
+    background-color:#0C0547;
+    color: #FFF;   
+ }
 
-{% if latest_question_list %}
-    <ul>
-    {% for question in latest_question_list %}
-        <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No polls are available.</p>
-{% endif %}
+{% endblock %}   
+</style>
+
+{% block jumbotron %}
+<div class="jumbotron">
+    <div class="container">
+    <div class="row">
+        <div class='col-sm-6'>
+
+        <!--<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" /> -->
+        <!--replaced by: -->
+        <link rel="stylesheet" type="text/css" href="{% static 'QSource/custom.css' %}" />
+        
+        {% if latest_question_list %}
+            <ul>
+        {% for question in latest_question_list %}        
+            <!--<li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li> -->
+            <!--replaced by: -->
+            <li><p><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></p></li>                
+        {% endfor %}
+            </ul>
+        {% else %}
+            <p>No polls are available.</p>
+        {% endif %}
+        </div>        
+        </div>
+    </div>
+ </div
+
+{% endblock %}
