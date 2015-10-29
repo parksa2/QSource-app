@@ -29,7 +29,7 @@ ALLOWED_HOSTS = []
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'qsourceapp@gmail.com' #official qsource email
-EMAIL_HOST_PASSWORD = 'thenightwatch'
+EMAIL_HOST_PASSWORD = 'password goes here'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -135,4 +135,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 ACCOUNT_ACTIVATION_DAYS = 7 #time for users to activate account
 REGISTRATION_AUTO_LOGIN = True
 SITE_ID = 1
+<<<<<<< HEAD
 LOGIN_REDIRECT_URL = '/polls/'
+=======
+LOGIN_REDIRECT_URL = '/'
+>>>>>>> origin/master
