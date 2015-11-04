@@ -2,14 +2,13 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.utils import timezone
-
 from django.views import generic #new
-
 from .models import Question
+
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
-    context_object_name = 'latest_question_list'
+    context_object_name = 'latest_question_list'    
 
     def get_queryset(self):
         
@@ -38,11 +37,14 @@ def vote(request, question_id):
 
     ans_num = (request.POST['ans'])
     if(int(ans_num) == 0): 
-        p.ans1_votes += 1
+        p.ans1_votes += 1    
     else: 
         p.ans2_votes += 1
     p.save()
     return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
+
+    
+
         
         
         

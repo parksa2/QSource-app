@@ -6,7 +6,7 @@ from .forms import ContactForm, SignUpForm
 # Create your views here.
 
 def home(request):
-    title = 'Sign Up' 
+    title = 'Sign Up to our Newsletter' 
     #if request.user.is_authenticated():
     #    title = "Welcome to QSource %s" %(request.user)
     

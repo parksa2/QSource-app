@@ -135,8 +135,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 ACCOUNT_ACTIVATION_DAYS = 7 #time for users to activate account
 REGISTRATION_AUTO_LOGIN = True
 SITE_ID = 1
-<<<<<<< HEAD
+#format: LOGIN_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/polls/'
-=======
-LOGIN_REDIRECT_URL = '/'
->>>>>>> origin/master
+
+

@@ -14,25 +14,26 @@
     color: #FFF;   
  }
 
-{% endblock %}   
+{% endblock %}
+
 </style>
 
 {% block jumbotron %}
 <div class="jumbotron">
     <div class="container">
     <div class="row">
-        <div class='col-sm-6'>
-
+        <div class='col-sm-6'>            
+        <p>QSource <i class="fa fa-question-circle fa-3x"></i></p>  <!-- Question icon -->        
         <!--<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" /> -->
         <!--replaced by: -->
         <link rel="stylesheet" type="text/css" href="{% static 'QSource/custom.css' %}" />
         
         {% if latest_question_list %}
             <ul>
-        {% for question in latest_question_list %}        
+        {% for question in latest_question_list %}            
             <!--<li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li> -->
             <!--replaced by: -->
-            <li><p><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></p></li>                
+            <li><p><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></p></li>            
         {% endfor %}
             </ul>
         {% else %}
