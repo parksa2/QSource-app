@@ -7,8 +7,8 @@ from .forms import ContactForm, SignUpForm
 
 def home(request):
     title = 'Sign Up to our Newsletter' 
-    #if request.user.is_authenticated():
-    #    title = "Welcome to QSource %s" %(request.user)
+    if request.user.is_authenticated():
+        title = "Welcome to QSource %s" %(request.user)
     
     #add a form
     
