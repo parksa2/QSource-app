@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import render
-from .forms import ContactForm, SignUpForm
+from .forms import ContactForm
 
 # Create your views here.
 
@@ -14,11 +14,11 @@ def home(request):
     
     #if request.method == "POST":
     #    print request.POST
-    form = SignUpForm(request.POST or None)
+    #form = SignUpForm(request.POST or None)
     
     context = {
         "title": title,
-        "form": form
+        #"form": form
     }
     return render(request, "home.html", context)
     
