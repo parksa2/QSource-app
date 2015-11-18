@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.views import generic #new
 from .models import Question
-
+from .forms import QuestionForm
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
@@ -26,11 +26,9 @@ class DetailView(generic.DetailView):
         """
         return Question.objects.filter(pub_date__lte=timezone.now())
 
-
 class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
-    
     
 def vote(request, question_id):
     p = get_object_or_404(Question, pk=question_id)
@@ -43,8 +41,15 @@ def vote(request, question_id):
     p.save()
     return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
 
-    
-
-        
-        
-        
+def GetQuestion(request):
+    if request.method == 'POST':
+        form = QuestionForm(request.POST or None)
+        if form.is_valid():
+            question_text = form.cleaned_data.get("question_text")            
+            option1 = form.cleaned_data.get("option1")            
+            option2 = form.cleaned_data.get("option2")            
+            print question_text, option1, option2
+            return HttpResponseRedirect('/polls/')
+    else:
+        form = QuestionForm()
+    return render(request, 'question.html', {'form': form})
