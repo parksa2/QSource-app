@@ -1,24 +1,27 @@
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import render
-from .forms import ContactForm, SignUpForm
+from .forms import ContactForm
+from django.shortcuts import redirect
+from polls.views import IndexView
 
 # Create your views here.
 
 def home(request):
+    
     title = 'Sign Up to our Newsletter' 
-    #if request.user.is_authenticated():
-    #    title = "Welcome to QSource %s" %(request.user)
+    if request.user.is_authenticated():
+        return redirectFeed()
     
     #add a form
     
     #if request.method == "POST":
     #    print request.POST
-    form = SignUpForm(request.POST or None)
+    #form = SignUpForm(request.POST or None)
     
     context = {
         "title": title,
-        "form": form
+        #"form": form
     }
     return render(request, "home.html", context)
     
@@ -72,4 +75,7 @@ def contact(request):
     }
     
     return render(request, "forms.html", context)
+    
+def redirectFeed():
+    return redirect('polls:index', permanent=True)
     
