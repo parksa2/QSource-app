@@ -9,7 +9,6 @@ from .forms import QuestionForm
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'    
-
     def get_queryset(self):
         
         #"""Return the last five published questions."""
@@ -45,10 +44,15 @@ def GetQuestion(request):
     if request.method == 'POST':
         form = QuestionForm(request.POST or None)
         if form.is_valid():
-            question_text = form.cleaned_data.get("question_text")            
+            new_question_text = form.cleaned_data.get("question_text")            
             option1 = form.cleaned_data.get("option1")            
             option2 = form.cleaned_data.get("option2")            
-            print question_text, option1, option2
+            NewQuestion = Question()
+            NewQuestion.question_text = new_question_text
+            NewQuestion.ans1_text = option1
+            NewQuestion.ans2_text = option2
+            NewQuestion.pub_date = timezone.now()
+            NewQuestion.save()
             return HttpResponseRedirect('/polls/')
     else:
         form = QuestionForm()
