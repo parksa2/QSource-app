@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import render
 from .forms import ContactForm, SignUpForm
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -38,6 +39,10 @@ def home(request):
         }
     
     return render(request, "home.html", context)
+
+
+def about(request):
+    return HttpResponse("This is our About Page")
 
 def contact(request):
     title = 'Contact Us'
