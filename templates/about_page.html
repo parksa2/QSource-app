@@ -1,0 +1,28 @@
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% include 'head_css.html' %}
+{% include 'navbar.html' %}
+{% include "javascript.html" %}
+
+<style>
+{% block style %}
+.navbar-static-top{
+    margin-bottom: 0px !important;
+}
+ .jumbotron {
+    background-color:#0C0547;
+    color: #FFF;
+ }
+
+{% endblock %}   
+</style>
+
+{% block jumbotron %}
+<div class="jumbotron">
+    <h1> <center>About Page</center></h1>
+ </div>
+
+ <h3> <center> We are a four person software development team from RPI </center></h3>
+ <h3> <center> Our names are Andrew Parks, Lydia Nevin, Daryian Rhysing and Sam Wenninger </center></h3>
+ <h3> <center> Please Contact us at QSourceapp@gmail.com</center></h3>
+{% endblock %}

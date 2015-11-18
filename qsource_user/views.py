@@ -39,8 +39,11 @@ def home(request):
     
     return render(request, "home.html", context)
 def about(request):
+    template_name='about_page.html'
+    context={}
     
-    return HttpResponse("We are a four person software development team from RPI. Our developers are Andrew Parks, Lydia Nevin, Sam Wenniger and Daryian Rhysing")
+    return render(request, "about_page.html", context)
+    
 
 def contact(request):
     title = 'Contact Us'
