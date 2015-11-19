@@ -2,13 +2,9 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import render
 from .forms import ContactForm
-<<<<<<< HEAD
 from polls.views import IndexView
 from django.shortcuts import redirect
-=======
-from django.shortcuts import redirect
-from polls.views import IndexView
->>>>>>> master
+
 
 # Create your views here.
 
@@ -46,6 +42,13 @@ def home(request):
         }
     
     return render(request, "home.html", context)
+    
+def about(request):
+    template_name='about_page.html'
+    context={}
+    
+    return render(request, "about_page.html", context)
+    
 
 def contact(request):
     title = 'Contact Us'
