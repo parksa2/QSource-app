@@ -13,8 +13,6 @@ from django.contrib.auth.models import User
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'    
-    def get_queryset(self):
-        
 
     def get(self, request, *args, **kwargs):
         if (request.user.is_authenticated() != True):
