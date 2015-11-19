@@ -91,7 +91,8 @@ def GetQuestion(request):
             NewQuestion.ans2_text = option2
             NewQuestion.pub_date = timezone.now()
             NewQuestion.save()
-            Asked = QuestionsAnswered.objects.create(user = request.user.pk,
+            NewUserData = get_data_or_create(request.user)
+            Asked = QuestionsAnswered.objects.create(user = NewUserData,
                                                     questionID = NewQuestion.pk)
             Asked.save() 
             return HttpResponseRedirect('/polls/')
