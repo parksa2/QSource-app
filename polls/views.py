@@ -25,10 +25,18 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):        
         if(self.user_data.showRecent):
-            return self.get_all_global_recent()
+            if(self.user_data.showMyQuestions):
+                return self.get_my_global_recent()
+            else:
+                return self.get_all_global_recent()
         else:
             return self.get_all_global_popular()
             
+           
+    def get_my_global_recent(self):
+        my_questions = QuestionsAsked.objects.filter(user = self.user_data)
+        return Question.objects.filter(pk__in = [my_q.questionID for my_q in my_questions]).order_by('-pub_date')[:10]
+        
     def get_all_global_popular(self):
         return Question.objects.filter(
             pub_date__lte=timezone.now()
@@ -93,7 +101,7 @@ def GetQuestion(request):
             NewQuestion.pub_date = timezone.now()
             NewQuestion.save()
             NewUserData = get_data_or_create(request.user)
-            Asked = QuestionsAnswered.objects.create(user = NewUserData,
+            Asked = QuestionsAsked.objects.create(user = NewUserData,
                                                     questionID = NewQuestion.pk)
             Asked.save() 
             return HttpResponseRedirect('/polls/')
