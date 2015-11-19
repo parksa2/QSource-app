@@ -10,6 +10,7 @@ class Question(models.Model):
     ans1_votes = models.IntegerField(default = 0)
     ans2_text = models.CharField(max_length = 200, default = "No")
     ans2_votes = models.IntegerField(default = 0)
+    votes = models.IntegerField(default = 0)
     def __unicode__(self):
         return self.question_text
         
