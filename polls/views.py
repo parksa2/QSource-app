@@ -4,8 +4,9 @@ from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.views import generic 
 from .models import Question
+from .forms import QuestionForm
 from django.shortcuts import redirect
-from qsource_user.models import UserData
+from qsource_user.models import *
 from django.contrib.auth.models import User
 
 
@@ -52,7 +53,6 @@ class DetailView(generic.DetailView):
     def get_queryset(self):
         return Question.objects.filter(pub_date__lte=timezone.now())
 
-
 class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
@@ -66,7 +66,9 @@ class ResultsView(generic.DetailView):
     
 def vote(request, question_id):
     p = get_object_or_404(Question, pk=question_id)
-
+    newQuestion = QuestionsAnswered.objects.create(user = request.user.pk,
+                                                    questionID = question_id)
+    newQuestion.save()
     ans_num = (request.POST['ans'])
     if(int(ans_num) == 0): 
         p.ans1_votes += 1    
@@ -75,6 +77,28 @@ def vote(request, question_id):
     p.votes = p.ans1_votes + p.ans2_votes
     p.save()
     return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
+
+def GetQuestion(request):
+    if request.method == 'POST':
+        form = QuestionForm(request.POST or None)
+        if form.is_valid():
+            new_question_text = form.cleaned_data.get("question_text")            
+            option1 = form.cleaned_data.get("option1")            
+            option2 = form.cleaned_data.get("option2")            
+            NewQuestion = Question()
+            NewQuestion.question_text = new_question_text
+            NewQuestion.ans1_text = option1
+            NewQuestion.ans2_text = option2
+            NewQuestion.pub_date = timezone.now()
+            NewQuestion.save()
+            NewUserData = get_data_or_create(request.user)
+            Asked = QuestionsAnswered.objects.create(user = NewUserData,
+                                                    questionID = NewQuestion.pk)
+            Asked.save() 
+            return HttpResponseRedirect('/polls/')
+    else:
+        form = QuestionForm()
+    return render(request, 'question.html', {'form': form})
     
 def get_data_or_create(myuser):
     if(hasattr(myuser, 'data') != True):
@@ -107,9 +131,3 @@ def settings(request):
     
 def redirectHome():
     return redirect('home', permanent=True)
-
-  
-
-        
-        
-        
