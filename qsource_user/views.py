@@ -74,7 +74,7 @@ def contact(request):
                   from_email,
                   to_email,
                   html_message=some_html_message,
-                  fail_silently=True)
+                  fail_silently=False)
     
     context = {
         "form": form,
