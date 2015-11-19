@@ -1,5 +1,5 @@
 *.pyc
-*.pyc
-*.pyc
-QSource/settings.pyc
-qsource_user/admin.pyc
+QSource/*.pyc
+qsource_user/*.pyc
+polls/*.pyc
+db.sqlite3
