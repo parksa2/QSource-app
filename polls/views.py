@@ -12,18 +12,32 @@ from django.contrib.auth.models import User
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'    
-
+    user_data = 0
+    
     def get(self, request, *args, **kwargs):
         if (request.user.is_authenticated() != True):
             return redirectHome()
         else:
+            self.user_data = get_data_or_create(request.user)
+            
             return super(IndexView, self).get(self, request, *args, **kwargs)
 
     def get_queryset(self):        
+        if(self.user_data.showRecent):
+            return self.get_all_global_recent()
+        else:
+            return self.get_all_global_popular()
+            
+    def get_all_global_popular(self):
+        return Question.objects.filter(
+            pub_date__lte=timezone.now()
+        ).order_by('-votes')[:10]
+        
+    def get_all_global_recent(self):
         #"""Return the last five published questions."""
         return Question.objects.filter(
             pub_date__lte=timezone.now()
-        ).order_by('-pub_date')[:5]
+        ).order_by('-pub_date')[:10]
 
 class DetailView(generic.DetailView):
     model = Question
@@ -36,9 +50,6 @@ class DetailView(generic.DetailView):
             return super(DetailView, self).get(self, request,*args, **kwargs)
     
     def get_queryset(self):
-        """
-        Excludes any questions that aren't published yet.
-        """
         return Question.objects.filter(pub_date__lte=timezone.now())
 
 
@@ -61,18 +72,23 @@ def vote(request, question_id):
         p.ans1_votes += 1    
     else: 
         p.ans2_votes += 1
+    p.votes = p.ans1_votes + p.ans2_votes
     p.save()
     return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
     
+def get_data_or_create(myuser):
+    if(hasattr(myuser, 'data') != True):
+        #generate a default and proceed
+        thisUser = UserData.objects.create(user = myuser)
+        thisUser.save()
+        return thisUser
+        
+    else:
+        return myuser.data
+    
 def settings(request):
     opt_str = (request.POST['opt'])
-    thisUser = 0
-    if(hasattr(request.user, 'data') != True):
-        #generate a default and proceed
-        thisUser = UserData.objects.create(user = request.user)
-        thisUser.save()
-        
-    thisUser = request.user.data
+    thisUser = get_data_or_create(request.user)
         
     if(opt_str == "My"):
         thisUser.showMyQuestions = True
