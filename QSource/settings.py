@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     #third party apps
     'crispy_forms',
     'registration',
+    'geoposition',
     #qsource apps
     'polls',
     'qsource_user',

@@ -20,17 +20,38 @@
 
 {% block jumbotron %}
 <div class="jumbotron">
-    <div class="container">
+  <div class="container">
     <div class="row">
-        <div class='col-sm-6'>             
-        
-        <link rel="stylesheet" type="text/css" href="{% static 'QSource/custom.css' %}" />
-        <p>QSource <i class="fa fa-question-circle fa-3x"></i></p>  <!-- Question icon -->
-        
-        {% if latest_question_list %}
-            <ul>
-        {% for question in latest_question_list %}
-        
+      <div class = "col-sm-8">
+        <form action="{% url 'polls:settings' %}" method="post">
+        {% csrf_token %}       
+        <div id="menu" class="collapse">
+          <div class="btn-group-vertical" style = "margin: 20px;">
+            <button type="submit" class="btn btn-primary" name = "opt" value = "All">All questions</button>
+            <button type="submit" class="btn btn-primary" name = "opt" value = "My">My questions</button>
+          </div>
+          <div class="btn-group-vertical" style = "margin: 20px;">
+            <button type="submit" class="btn btn-primary" name = "opt" value = "Local">Local</button>
+            <button type="submit" class="btn btn-primary" name = "opt" value = "Global">Global</button>
+          </div>
+          <div class="btn-group-vertical" style = "margin: 20px;">
+            <button type="submit" class="btn btn-primary" name = "opt" value = "Recent">Recent</button>
+            <button type="submit" class="btn btn-primary" name = "opt" value = "Popular">Popular</button>
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
+    <div class="row">  
+      <div class='col-sm-6'>            
+      <p>QSource <i class="fa fa-question-circle fa-3x"></i></p>  <!-- Question icon -->        
+      <!--<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" /> -->
+      <!--replaced by: -->
+      <link rel="stylesheet" type="text/css" href="{% static 'QSource/custom.css' %}" />
+      
+      {% if latest_question_list %}
+          <ul>
+      {% for question in latest_question_list %}            
             <li><p><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></p></li>
             {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
@@ -47,17 +68,15 @@
             <input class='btn btn-default' type='submit' value='Vote' />        
             </p>
              
-            </form> 
-                                               
-        {% endfor %}
-            </ul>
-        {% else %}
-            <p>No polls are available.</p>
-        {% endif %}        
-        
-        </div>        
-        </div>
+            </form>      
+      {% endfor %}
+          </ul>
+      {% else %}
+          <p>No polls are available.</p>
+      {% endif %}
+      </div>        
     </div>
- </div
+  </div>
+</div>
 
 {% endblock %}

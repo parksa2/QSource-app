@@ -1,14 +1,17 @@
 from django.contrib import admin
 
-# Register your models here.
+#Register your models here.
 
-from .forms import SignUpForm
-from .models import SignUp
+#from .models import SignUp
+from .models import UserData
 
-class SignUpAdmin(admin.ModelAdmin):
-    list_display = ["_unicode_", "timestamp", "updated"]
-    form = SignUpForm
-    #class Meta:
-    #    model = SignUp
+# class SignUpAdmin(admin.ModelAdmin):
+    # list_display = ["_unicode_", "timestamp", "updated"]
+    # form = SignUpForm
 
-admin.site.register(SignUp, SignUpAdmin)
+# admin.site.register(SignUp, SignUpAdmin)
+
+class UserDataAdmin(admin.ModelAdmin):
+    list_display = ["user", "position"]
+    
+admin.site.register(UserData, UserDataAdmin)
