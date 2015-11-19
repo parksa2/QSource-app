@@ -118,6 +118,7 @@ class QuestionIndexDetailTests(TestCase):
                                           days=5)
         response = self.client.get(reverse('polls:detail',
                                    args=(future_question.id,)))
+        
         self.assertEqual(response.status_code, 404)
 
     def test_detail_view_with_a_past_question(self):
@@ -129,6 +130,7 @@ class QuestionIndexDetailTests(TestCase):
                                         days=-5)
         response = self.client.get(reverse('polls:detail',
                                    args=(past_question.id,)))
+        
         self.assertContains(response, past_question.question_text,
                             status_code=200)
 

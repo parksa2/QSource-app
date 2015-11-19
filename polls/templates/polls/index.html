@@ -53,9 +53,23 @@
       {% if latest_question_list %}
           <ul>
       {% for question in latest_question_list %}            
-          <!--<li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li> -->
-          <!--replaced by: -->
-          <li><p><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></p></li>            
+            <li><p><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></p></li>
+            {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+            <form action="{% url 'polls:vote' question.id %}" method="post">
+            
+            {% csrf_token %}            
+            
+            <input type="radio" name="ans" id=1 value=0 />        
+            <label for=1>{{ question.ans1_text }}</label><br />
+
+            <input type="radio" name="ans" id=2 value=1 />
+            <label for=2>{{ question.ans2_text }}</label><br />
+            <p>
+            <input class='btn btn-default' type='submit' value='Vote' />        
+            </p>
+             
+            </form>      
       {% endfor %}
           </ul>
       {% else %}
