@@ -6,7 +6,7 @@ from django.views import generic
 from .models import Question
 from .forms import QuestionForm
 from django.shortcuts import redirect
-from qsource_user.models import UserData
+from qsource_user.models import *
 from django.contrib.auth.models import User
 
 
@@ -55,7 +55,9 @@ class ResultsView(generic.DetailView):
     
 def vote(request, question_id):
     p = get_object_or_404(Question, pk=question_id)
-
+    newQuestion = QuestionsAnswered.objects.create(user = request.user.pk,
+                                                    questionID = question_id)
+    newQuestion.save()
     ans_num = (request.POST['ans'])
     if(int(ans_num) == 0): 
         p.ans1_votes += 1    
@@ -77,6 +79,9 @@ def GetQuestion(request):
             NewQuestion.ans2_text = option2
             NewQuestion.pub_date = timezone.now()
             NewQuestion.save()
+            Asked = QuestionsAnswered.objects.create(user = request.user.pk,
+                                                    questionID = NewQuestion.pk)
+            Asked.save() 
             return HttpResponseRedirect('/polls/')
     else:
         form = QuestionForm()
