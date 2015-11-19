@@ -1,0 +1,5 @@
+*.pyc
+QSource/*.pyc
+qsource_user/*.pyc
+polls/*.pyc
+db.sqlite3
