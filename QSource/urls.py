@@ -24,7 +24,7 @@ urlpatterns = [
     #Do not do this for production!!! This is only used for development environment
     url(r'^$', 'qsource_user.views.home', name='home'),
     url(r'^contact/$', 'qsource_user.views.contact', name='contact'),
-    #url(r'^about/$', 'user.views.about', name='about'),
+    url(r'^about/$', 'qsource_user.views.about', name='about'),
     
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('registration.backends.default.urls')),
