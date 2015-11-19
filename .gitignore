@@ -2,4 +2,4 @@
 QSource/*.pyc
 qsource_user/*.pyc
 polls/*.pyc
-*.sqlite3
+db.sqlite3
