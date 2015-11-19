@@ -15,9 +15,15 @@ from geoposition.fields import GeopositionField
         
 class UserData(models.Model):
     user = models.OneToOneField(User, primary_key = True, related_name = "data")
-#    questionsAsked = 
-#    questionsAnswered = 
     showMyQuestions = models.BooleanField(default = False)
     showLocal = models.BooleanField(default = False)
     showRecent = models.BooleanField(default = True)
     position = GeopositionField()
+
+class QuestionsAnswered(models.Model):
+    user = models.ForeignKey(UserData)
+    questionID = models.IntegerField()
+
+class QuestionsAsked(models.Model):
+    user = models.ForeignKey(UserData)
+    questionID = models.IntegerField()
