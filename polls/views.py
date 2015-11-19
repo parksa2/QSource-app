@@ -62,10 +62,15 @@ def vote(request, question_id):
     p.save()
     return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
     
+def settings(request):
+    opt_str = (request.POST['opt'])
+    print(opt_str)
+    return redirect('home', permanent = True)
+    
 def redirectHome():
     return redirect('home', permanent=True)
 
-    
+  
 
         
         
