@@ -83,6 +83,7 @@ def contact(request):
     }
     
     return render(request, "forms.html", context)
+
     
 def redirectFeed():
     return redirect('polls:index', permanent=True)

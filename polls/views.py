@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.views import generic 
 from .models import Question
 from django.shortcuts import redirect
+from qsource_user.models import UserData
+from django.contrib.auth.models import User
 
 
 class IndexView(generic.ListView):
@@ -62,10 +64,35 @@ def vote(request, question_id):
     p.save()
     return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
     
+def settings(request):
+    opt_str = (request.POST['opt'])
+    thisUser = 0
+    if(hasattr(request.user, 'data') != True):
+        #generate a default and proceed
+        thisUser = UserData.objects.create(user = request.user)
+        thisUser.save()
+        
+    thisUser = request.user.data
+        
+    if(opt_str == "My"):
+        thisUser.showMyQuestions = True
+    elif(opt_str == "All"):
+        thisUser.showMyQuestions = False
+    elif(opt_str == "Local"):
+        thisUser.showLocal = True
+    elif(opt_str == "Global"):
+        thisUser.showLocal = False
+    elif(opt_str == "Recent"):
+        thisUser.showRecent = True
+    elif(opt_str == "Popular"):
+        thisUser.showRecent = False        
+    thisUser.save()
+    return redirect('home', permanent = True)
+    
 def redirectHome():
     return redirect('home', permanent=True)
 
-    
+  
 
         
         

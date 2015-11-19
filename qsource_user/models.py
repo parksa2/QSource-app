@@ -14,7 +14,7 @@ from geoposition.fields import GeopositionField
         
         
 class UserData(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, primary_key = True, related_name = "data")
 #    questionsAsked = 
 #    questionsAnswered = 
     showMyQuestions = models.BooleanField(default = False)
