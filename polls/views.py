@@ -66,7 +66,8 @@ class ResultsView(generic.DetailView):
     
 def vote(request, question_id):
     p = get_object_or_404(Question, pk=question_id)
-    newQuestion = QuestionsAnswered.objects.create(user = request.user.pk,
+    NewUserData = get_data_or_create(request.user)
+    newQuestion = QuestionsAnswered.objects.create(user = NewUserData,
                                                     questionID = question_id)
     newQuestion.save()
     ans_num = (request.POST['ans'])
