@@ -4,11 +4,11 @@ from django.utils import timezone
 from django.db import models
 
 class Question(models.Model):
-    question_text = models.CharField(max_length = 200)
+    question_text = models.CharField(max_length = 300)
     pub_date = models.DateTimeField('date published')
-    ans1_text = models.CharField(max_length = 200, default= "Yes")
+    ans1_text = models.CharField(max_length = 80, default= "Yes")
     ans1_votes = models.IntegerField(default = 0)
-    ans2_text = models.CharField(max_length = 200, default = "No")
+    ans2_text = models.CharField(max_length = 80, default = "No")
     ans2_votes = models.IntegerField(default = 0)
     votes = models.IntegerField(default = 0)
     def __unicode__(self):

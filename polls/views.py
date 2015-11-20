@@ -20,7 +20,6 @@ class IndexView(generic.ListView):
             return redirectHome()
         else:
             self.user_data = get_data_or_create(request.user)
-            
             return super(IndexView, self).get(self, request, *args, **kwargs)
             
     def get_context_data(self, **kwargs):
@@ -122,7 +121,6 @@ def settings(request):
     opt2_str = request.POST.get('opt2', "")
     opt3_str = request.POST.get('opt3', "")
     thisUser = get_data_or_create(request.user)
-        
     if(opt1_str == "My"):
         thisUser.showMyQuestions = True
     elif(opt1_str == "All"):
