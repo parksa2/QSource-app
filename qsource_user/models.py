@@ -21,6 +21,9 @@ class UserData(models.Model):
     showLocal = models.BooleanField(default = False)
     showRecent = models.BooleanField(default = True)
     position = GeopositionField()
+
+    def __unicode__(self):
+        return self.user.username
     
     def answer(self, question, choice_num):
         asked_already = QuestionsAnswered.objects.filter(user = self, questionID = question.pk)
