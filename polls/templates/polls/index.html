@@ -43,8 +43,9 @@
       </div>
     </div>
     <div class="row">  
-      <div class='col-sm-6'>            
-      <p>QSource <i class="fa fa-question-circle fa-3x"></i></p>  <!-- Question icon -->        
+      <div class='col-md-2'></div> <!-- is there a better way to center? -->
+      <div class='col-md-8'>            
+      <!-- <p>QSource <i class="fa fa-question-circle fa-3x"></i></p>  --> <!-- Question icon -->        
       <a href="{% url 'polls:question' %}"><h2 style="color:red">Ask a Question</h2></a>
       <!--<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" /> -->
       <!--replaced by: -->
@@ -53,23 +54,27 @@
       {% if latest_question_list %}
           <ul>
       {% for question in latest_question_list %}            
-            <li><p><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></p></li>
-            {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <p><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></p>
+                {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+                <form action="{% url 'polls:vote' question.id %}" method="post">
+                
+                {% csrf_token %}            
+                <button type="submit" class="btn btn-info" name="ans" value=0 >{{ question.ans1_text }}</button>
+                <button type="submit" class="btn btn-info" name="ans" value=1 >{{ question.ans2_text }}</button>
+                <!-- <input type="radio" name="ans" id=1 value=0 />        
+                <label for=1>{{ question.ans1_text }}</label><br />
 
-            <form action="{% url 'polls:vote' question.id %}" method="post">
-            
-            {% csrf_token %}            
-            
-            <input type="radio" name="ans" id=1 value=0 />        
-            <label for=1>{{ question.ans1_text }}</label><br />
-
-            <input type="radio" name="ans" id=2 value=1 />
-            <label for=2>{{ question.ans2_text }}</label><br />
-            <p>
-            <input class='btn btn-default' type='submit' value='Vote' />        
-            </p>
-             
-            </form>      
+                <input type="radio" name="ans" id=2 value=1 />
+                <label for=2>{{ question.ans2_text }}</label><br />
+                <p>
+                <input class='btn btn-default' type='submit' value='Vote' />       -->  
+                </p>
+                 
+                </form>      
+              </div>
+            </div>
       {% endfor %}
           </ul>
       {% else %}
