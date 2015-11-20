@@ -16,11 +16,12 @@ class IndexView(generic.ListView):
     user_data = 0
 
     def get(self, request, *args, **kwargs):
+        print "USER: "
+        print request.user.username
         if (request.user.is_authenticated() != True):
             return redirectHome()
         else:
             self.user_data = get_data_or_create(request.user)
-            
             return super(IndexView, self).get(self, request, *args, **kwargs)
             
     def get_context_data(self, **kwargs):

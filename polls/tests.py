@@ -3,6 +3,7 @@ import datetime
 from django.utils import timezone
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 
 from .models import Question
 
@@ -36,6 +37,11 @@ class QuestionMethodTests(TestCase):
         recent_question = Question(pub_date=time)
         self.assertEqual(recent_question.was_published_recently(), True)
         
+    def test_vote_choice_1(self):
+    
+    def test_vote_choice_2(self):
+    
+    def test_vote_update_total(self):
         
         
 def create_question(question_text, days):
@@ -48,7 +54,7 @@ def create_question(question_text, days):
     return Question.objects.create(question_text=question_text,
                                    pub_date=time)
 
-
+#Sample user creation: User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
 class QuestionViewTests(TestCase):
     def test_index_view_with_no_questions(self):
         """
