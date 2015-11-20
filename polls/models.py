@@ -21,3 +21,10 @@ class Question(models.Model):
     was_published_recently.admin_order_field = 'pub_date'
     was_published_recently.boolean = True
     was_published_recently.short_description = 'Published recently?'
+    
+    def vote(self, ans_num):
+        if(int(ans_num) == 0): 
+            self.ans1_votes += 1    
+        else: 
+            self.ans2_votes += 1
+        self.votes = self.ans1_votes + self.ans2_votes

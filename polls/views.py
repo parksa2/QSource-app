@@ -74,17 +74,9 @@ class ResultsView(generic.DetailView):
     
 def vote(request, question_id):
     p = get_object_or_404(Question, pk=question_id)
-    NewUserData = get_data_or_create(request.user)
-    newQuestion = QuestionsAnswered.objects.create(user = NewUserData,
-                                                    questionID = question_id)
-    newQuestion.save()
+    user_data = get_data_or_create(request.user)
     ans_num = (request.POST['ans'])
-    if(int(ans_num) == 0): 
-        p.ans1_votes += 1    
-    else: 
-        p.ans2_votes += 1
-    p.votes = p.ans1_votes + p.ans2_votes
-    p.save()
+    user_data.answer(p, ans_num)  
     return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
 
 def GetQuestion(request):
@@ -93,17 +85,9 @@ def GetQuestion(request):
         if form.is_valid():
             new_question_text = form.cleaned_data.get("question_text")            
             option1 = form.cleaned_data.get("option1")            
-            option2 = form.cleaned_data.get("option2")            
-            NewQuestion = Question()
-            NewQuestion.question_text = new_question_text
-            NewQuestion.ans1_text = option1
-            NewQuestion.ans2_text = option2
-            NewQuestion.pub_date = timezone.now()
-            NewQuestion.save()
-            NewUserData = get_data_or_create(request.user)
-            Asked = QuestionsAsked.objects.create(user = NewUserData,
-                                                    questionID = NewQuestion.pk)
-            Asked.save() 
+            option2 = form.cleaned_data.get("option2")         
+            user_data = get_data_or_create(request.user)
+            user_data.ask(new_question_text, option1, option2)
             return HttpResponseRedirect('/polls/')
     else:
         form = QuestionForm()
