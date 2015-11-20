@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from geoposition.fields import GeopositionField
+from polls.models import Question
+from django.utils import timezone
 
 # Create your models here.
 # class SignUp(models.Model):
@@ -19,6 +21,22 @@ class UserData(models.Model):
     showLocal = models.BooleanField(default = False)
     showRecent = models.BooleanField(default = True)
     position = GeopositionField()
+    
+    def answer(self, question, choice_num):
+        newAns = QuestionsAnswered.objects.create(user = self, questionID = question.pk)
+        newAns.save()
+        question.vote(choice_num)
+        question.save()
+        
+    def ask(self, new_question_text, option1, option2):
+        newQuestion = Question.objects.create(question_text = new_question_text,
+                                              ans1_text = option1,
+                                              ans2_text = option2,
+                                              pub_date = timezone.now())
+        newQuestion.save()
+        asked = QuestionsAsked.objects.create(user = self,
+                                                questionID = newQuestion.pk)
+        asked.save() 
 
 class QuestionsAnswered(models.Model):
     user = models.ForeignKey(UserData)
