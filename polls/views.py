@@ -14,7 +14,7 @@ class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'    
     user_data = 0
-    
+
     def get(self, request, *args, **kwargs):
         if (request.user.is_authenticated() != True):
             return redirectHome()
@@ -22,6 +22,13 @@ class IndexView(generic.ListView):
             self.user_data = get_data_or_create(request.user)
             
             return super(IndexView, self).get(self, request, *args, **kwargs)
+            
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data(**kwargs)
+        context['user_my'] = self.user_data.showMyQuestions
+        context['user_local'] = self.user_data.showLocal
+        context['user_recent'] = self.user_data.showRecent
+        return context
 
     def get_queryset(self):        
         if(self.user_data.showRecent):
@@ -30,12 +37,19 @@ class IndexView(generic.ListView):
             else:
                 return self.get_all_global_recent()
         else:
-            return self.get_all_global_popular()
+            if(self.user_data.showMyQuestions):
+                return self.get_my_global_popular()
+            else:
+                return self.get_all_global_popular()
             
            
     def get_my_global_recent(self):
         my_questions = QuestionsAsked.objects.filter(user = self.user_data)
         return Question.objects.filter(pk__in = [my_q.questionID for my_q in my_questions]).order_by('-pub_date')[:10]
+        
+    def get_my_global_popular(self):
+        my_questions = QuestionsAsked.objects.filter(user = self.user_data)
+        return Question.objects.filter(pk__in = [my_q.questionID for my_q in my_questions]).order_by('-votes')[:10]
         
     def get_all_global_popular(self):
         return Question.objects.filter(
@@ -104,20 +118,22 @@ def get_data_or_create(myuser):
         return myuser.data
     
 def settings(request):
-    opt_str = (request.POST['opt'])
+    opt1_str = request.POST.get('opt1', "")
+    opt2_str = request.POST.get('opt2', "")
+    opt3_str = request.POST.get('opt3', "")
     thisUser = get_data_or_create(request.user)
         
-    if(opt_str == "My"):
+    if(opt1_str == "My"):
         thisUser.showMyQuestions = True
-    elif(opt_str == "All"):
+    elif(opt1_str == "All"):
         thisUser.showMyQuestions = False
-    elif(opt_str == "Local"):
+    if(opt2_str == "Local"):
         thisUser.showLocal = True
-    elif(opt_str == "Global"):
+    elif(opt2_str == "Global"):
         thisUser.showLocal = False
-    elif(opt_str == "Recent"):
+    if(opt3_str == "Recent"):
         thisUser.showRecent = True
-    elif(opt_str == "Popular"):
+    elif(opt3_str == "Popular"):
         thisUser.showRecent = False        
     thisUser.save()
     return redirect('home', permanent = True)
