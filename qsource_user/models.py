@@ -23,10 +23,15 @@ class UserData(models.Model):
     position = GeopositionField()
     
     def answer(self, question, choice_num):
-        newAns = QuestionsAnswered.objects.create(user = self, questionID = question.pk)
-        newAns.save()
-        question.vote(choice_num)
-        question.save()
+        asked_already = QuestionsAnswered.objects.filter(user = self, questionID = question.pk)
+        if not asked_already:
+            newAns = QuestionsAnswered.objects.create(user = self, questionID = question.pk)
+            newAns.save()
+            question.vote(choice_num)
+            question.save()
+            return True
+        else:
+            return False
         
     def ask(self, new_question_text, option1, option2):
         newQuestion = Question.objects.create(question_text = new_question_text,
