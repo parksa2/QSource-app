@@ -4,7 +4,8 @@ from django.utils import timezone
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-
+from qsource_user.models import *
+from django.test import Client
 from .models import Question
 
 
@@ -38,11 +39,18 @@ class QuestionMethodTests(TestCase):
         self.assertEqual(recent_question.was_published_recently(), True)
         
     def test_vote_choice_1(self):
+        q = Question.objects.create(question_text = "Anybody out there?", pub_date = timezone.now())
+        q.vote(0)
+        self.assertEqual(q.ans1_votes, 1)
+        self.assertEqual(q.ans2_votes, 0)
+        self.assertEqual(q.votes, 1)
     
     def test_vote_choice_2(self):
-    
-    def test_vote_update_total(self):
-        
+        q = Question.objects.create(question_text = "Anybody out there?", pub_date = timezone.now())
+        q.vote(1)
+        self.assertEqual(q.ans1_votes, 0)
+        self.assertEqual(q.ans2_votes, 1)
+        self.assertEqual(q.votes, 1)
         
 def create_question(question_text, days):
     """
@@ -60,7 +68,12 @@ class QuestionViewTests(TestCase):
         """
         If no questions exist, an appropriate message should be displayed.
         """
-        response = self.client.get(reverse('polls:index'))
+        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        newData = UserData.objects.create(user = newUser)
+        newUser.is_active = True
+        c = Client()
+        c.login(username = 'john', password = 'johnpassword')
+        response = c.get(reverse('polls:index'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "No polls are available.")
         self.assertQuerysetEqual(response.context['latest_question_list'], [])
@@ -70,8 +83,13 @@ class QuestionViewTests(TestCase):
         Questions with a pub_date in the past should be displayed on the
         index page.
         """
+        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        newData = UserData.objects.create(user = newUser)
+        newUser.is_active = True
+        c = Client()
+        c.login(username = 'john', password = 'johnpassword')
         create_question(question_text="Past question.", days=-30)
-        response = self.client.get(reverse('polls:index'))
+        response = c.get(reverse('polls:index'))
         self.assertQuerysetEqual(
             response.context['latest_question_list'],
             ['<Question: Past question.>']
@@ -82,8 +100,13 @@ class QuestionViewTests(TestCase):
         Questions with a pub_date in the future should not be displayed on
         the index page.
         """
+        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        newData = UserData.objects.create(user = newUser)
+        newUser.is_active = True
+        c = Client()
+        c.login(username = 'john', password = 'johnpassword')
         create_question(question_text="Future question.", days=30)
-        response = self.client.get(reverse('polls:index'))
+        response = c.get(reverse('polls:index'))
         self.assertContains(response, "No polls are available.",
                             status_code=200)
         self.assertQuerysetEqual(response.context['latest_question_list'], [])
@@ -93,9 +116,14 @@ class QuestionViewTests(TestCase):
         Even if both past and future questions exist, only past questions
         should be displayed.
         """
+        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        newData = UserData.objects.create(user = newUser)
+        newUser.is_active = True
+        c = Client()
+        c.login(username = 'john', password = 'johnpassword')
         create_question(question_text="Past question.", days=-30)
         create_question(question_text="Future question.", days=30)
-        response = self.client.get(reverse('polls:index'))
+        response = c.get(reverse('polls:index'))
         self.assertQuerysetEqual(
             response.context['latest_question_list'],
             ['<Question: Past question.>']
@@ -107,37 +135,15 @@ class QuestionViewTests(TestCase):
         """
         create_question(question_text="Past question 1.", days=-30)
         create_question(question_text="Past question 2.", days=-5)
-        response = self.client.get(reverse('polls:index'))
+        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        newData = UserData.objects.create(user = newUser)
+        newUser.is_active = True
+        c = Client()
+        c.login(username = 'john', password = 'johnpassword')
+        response = c.get(reverse('polls:index'))
         self.assertQuerysetEqual(
             response.context['latest_question_list'],
             ['<Question: Past question 2.>', '<Question: Past question 1.>']
         )
         
         
-class QuestionIndexDetailTests(TestCase):
-    def test_detail_view_with_a_future_question(self):
-        """
-        The detail view of a question with a pub_date in the future should
-        return a 404 not found.
-        """
-        future_question = create_question(question_text='Future question.',
-                                          days=5)
-        response = self.client.get(reverse('polls:detail',
-                                   args=(future_question.id,)))
-        
-        self.assertEqual(response.status_code, 404)
-
-    def test_detail_view_with_a_past_question(self):
-        """
-        The detail view of a question with a pub_date in the past should
-        display the question's text.
-        """
-        past_question = create_question(question_text='Past Question.',
-                                        days=-5)
-        response = self.client.get(reverse('polls:detail',
-                                   args=(past_question.id,)))
-        
-        self.assertContains(response, past_question.question_text,
-                            status_code=200)
-
-                            

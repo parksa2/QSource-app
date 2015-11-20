@@ -16,8 +16,6 @@ class IndexView(generic.ListView):
     user_data = 0
 
     def get(self, request, *args, **kwargs):
-        print "USER: "
-        print request.user.username
         if (request.user.is_authenticated() != True):
             return redirectHome()
         else:
@@ -123,7 +121,6 @@ def settings(request):
     opt2_str = request.POST.get('opt2', "")
     opt3_str = request.POST.get('opt3', "")
     thisUser = get_data_or_create(request.user)
-        
     if(opt1_str == "My"):
         thisUser.showMyQuestions = True
     elif(opt1_str == "All"):
