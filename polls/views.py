@@ -88,7 +88,7 @@ class ResultsView(generic.DetailView):
 def vote(request, question_id):
     p = get_object_or_404(Question, pk=question_id)
     user_data = get_data_or_create(request.user)
-    ans_num = (request.POST['ans'])
+    ans_num = request.POST.get('ans', -1)
     user_data.answer(p, ans_num)  
     return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
 

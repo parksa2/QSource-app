@@ -31,63 +31,75 @@ class UserDataTests(TestCase):
     def test_create_data_from_user(self):
         newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
         newData = UserData.objects.create(user = newUser)
+        #Check correct associations
         self.assertEqual(newUser.pk, newData.pk)
+        self.assertEqual(newUser, newData.user)
         self.assertEqual(newData, newUser.data)
 
     def test_cannot_answer_twice(self):
+        #Check behavior for duplicate answer attempts
+        #Should block a second vote, even if the other choice is selected
         newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
         newData = UserData.objects.create(user = newUser)
         newQ = create_question("Anybody out there?", "yes", "no")
         newData.answer(newQ, 0)
         newData.answer(newQ, 1)
+        #Make sure the correct vote, and only the correct vote, has been registered
         self.assertEqual(newQ.ans1_votes, 1)
+        self.assertEqual(newQ.ans2_votes, 0)
         self.assertEqual(newQ.votes, 1)
-    
+        #Make sure the database hasn't stored an extra QuestionsAnswered object
+        numAnsweredObjects = len(QuestionsAnswered.objects.filter(
+            user = newData, 
+            questionID = newQ.pk))
+        self.assertEqual(numAnsweredObjects, 1)
+
+#helper function to simluate authentication of new user
+#allows UserData to interact with view
+def new_user_login(client):
+    newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+    newData = UserData.objects.create(user = newUser)
+    newUser.is_active = True
+    client.login(username = 'john', password = 'johnpassword')
+    return newUser
 
 class UserViewTests(TestCase):
 
+    #Test Menu submission with no changed options
     def test_update_settings_none(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newUser.is_active = True
         c = Client()
-        c.login(username = 'john', password = 'johnpassword')
+        newUser = new_user_login(c)
         c.post('/polls/settings/', {})
         newData = UserData.objects.get(pk = newUser.pk)
         self.assertEqual(newData.showMyQuestions, False)
         self.assertEqual(newData.showLocal, False)
         self.assertEqual(newData.showRecent, True)
     
+    #Test menu submission with a single changed option
     def test_update_settings_single(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newUser.is_active = True
         c = Client()
-        c.login(username = 'john', password = 'johnpassword')
+        newUser = new_user_login(c)
         c.post('/polls/settings/', {'opt1':'My'})
         newData = UserData.objects.get(pk = newUser.pk)
         self.assertEqual(newData.showMyQuestions, True)
         self.assertEqual(newData.showLocal, False)
         self.assertEqual(newData.showRecent, True)
-        
+     
+    #test menu submission with all options changed
     def test_update_settings_all(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newUser.is_active = True
         c = Client()
-        c.login(username = 'john', password = 'johnpassword')
+        newUser = new_user_login(c)
         c.post('/polls/settings/', {'opt1':'My', 'opt2':'Local', 'opt3':'Popular'})
         newData = UserData.objects.get(pk = newUser.pk)
         self.assertEqual(newData.showMyQuestions, True)
         self.assertEqual(newData.showLocal, True)
         self.assertEqual(newData.showRecent, False)
-    
+
+    #test showRecent = True feed setting
     def test_recent(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newUser.is_active = True
         c = Client()
-        c.login(username = 'john', password = 'johnpassword')
+        newUser = new_user_login(c)
+        newData = UserData.objects.get(pk = newUser.pk)
         newQ1 = create_question_time("Old.", -1)
         newData.answer(newQ1, 0)
         newQ2 = create_question_time("New.", 0)
@@ -99,13 +111,11 @@ class UserViewTests(TestCase):
             ['<Question: New.>','<Question: Old.>']
         ) 
 
-        
+    #test showRecent = False setting (sort by most votes)
     def test_popular(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newUser.is_active = True
         c = Client()
-        c.login(username = 'john', password = 'johnpassword')
+        newUser = new_user_login(c)
+        newData = UserData.objects.get(pk = newUser.pk)
         newQ1 = create_question_time("Has votes.", -1)
         newData.answer(newQ1, 0)
         newQ2 = create_question_time("No votes.", 0)
@@ -117,12 +127,11 @@ class UserViewTests(TestCase):
             ['<Question: Has votes.>','<Question: No votes.>']
         )
     
+    #test showMyQuestions = True (questions asked by this user only)
     def test_my(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newUser.is_active = True
         c = Client()
-        c.login(username = 'john', password = 'johnpassword')
+        newUser = new_user_login(c)
+        newData = UserData.objects.get(pk = newUser.pk)
         newQ = create_question_time("Not my question.", -1)
         newData.ask("My question.", "Yes", "No")
         newData.showMyQuestions = True
@@ -132,13 +141,12 @@ class UserViewTests(TestCase):
             response.context['latest_question_list'],
             ['<Question: My question.>']
         )
-
+    
+    #test showMyQuestions = False (all applicable questions shown)
     def test_all(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newUser.is_active = True
         c = Client()
-        c.login(username = 'john', password = 'johnpassword')
+        newUser = new_user_login(c)
+        newData = UserData.objects.get(pk = newUser.pk)
         newQ = create_question_time("Not my question.", -1)
         newData.ask("My question.", "Yes", "No")
         newData.showMyQuestions = False
@@ -154,11 +162,9 @@ class UserViewTests(TestCase):
 #properly associated with the user that answered the question.
 class QuestionsAnsweredTests(TestCase):
     def test_questions_answered_object_added(self):
-        NewUser = User.objects.create_user('test', 'test@test.com', '12345')
-        NewUserData = UserData.objects.create(user = NewUser)
-        NewUser.is_active = True
         c = Client()
-        c.login(username = 'test', password = '12345')
+        NewUser = new_user_login(c)
+        NewUserData = UserData.objects.get(pk = NewUser.pk)
         TestQuestion = Question.objects.create(question_text = 'Fish?',
                                                ans1_text = 'Yes',
                                                ans2_text = 'No',
@@ -177,11 +183,9 @@ class QuestionsAnsweredTests(TestCase):
 #properly assocaited with the user that asked the question.
 class QuestionsAskedTests(TestCase):
     def test_questions_asked_object_added(self):
-        NewUser = User.objects.create_user('test', 'test@test.com', '12345')
-        NewUserData = UserData.objects.create(user = NewUser)
-        NewUser.is_active = True
         c = Client()
-        c.login(username = 'test', password = '12345')
+        NewUser = new_user_login(c)
+        NewUserData = UserData.objects.get(pk = NewUser.pk)
         #Create a new question and add it to the Question and QuestionAsked
         #database tables.
         NewUserData.ask('Fish?', 'Yes', 'No')

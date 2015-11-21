@@ -25,6 +25,6 @@ class Question(models.Model):
     def vote(self, ans_num):
         if(int(ans_num) == 0): 
             self.ans1_votes += 1    
-        else: 
+        elif(int(ans_num) == 1): 
             self.ans2_votes += 1
         self.votes = self.ans1_votes + self.ans2_votes
