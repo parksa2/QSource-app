@@ -29,70 +29,70 @@ def create_question(question_text, ans1, ans2):
 class UserDataTests(TestCase):
 
     def test_create_data_from_user(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        self.assertEqual(newUser.pk, newData.pk)
-        self.assertEqual(newData, newUser.data)
+        new_user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        new_data = UserData.objects.create(user = new_user)
+        self.assertEqual(new_user.pk, new_data.pk)
+        self.assertEqual(new_data, new_user.data)
 
     def test_cannot_answer_twice(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newQ = create_question("Anybody out there?", "yes", "no")
-        newData.answer(newQ, 0)
-        newData.answer(newQ, 1)
-        self.assertEqual(newQ.ans1_votes, 1)
-        self.assertEqual(newQ.votes, 1)
+        new_user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        new_data = UserData.objects.create(user = new_user)
+        new_q = create_question("Anybody out there?", "yes", "no")
+        new_data.answer(new_q, 0)
+        new_data.answer(new_q, 1)
+        self.assertEqual(new_q.ans1_votes, 1)
+        self.assertEqual(new_q.votes, 1)
     
 
 class UserViewTests(TestCase):
 
     def test_update_settings_none(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newUser.is_active = True
+        new_user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        new_data = UserData.objects.create(user = new_user)
+        new_user.is_active = True
         c = Client()
         c.login(username = 'john', password = 'johnpassword')
         c.post('/polls/settings/', {})
-        newData = UserData.objects.get(pk = newUser.pk)
-        self.assertEqual(newData.showMyQuestions, False)
-        self.assertEqual(newData.showLocal, False)
-        self.assertEqual(newData.showRecent, True)
+        new_data = UserData.objects.get(pk = new_user.pk)
+        self.assertEqual(new_data.showMyQuestions, False)
+        self.assertEqual(new_data.showLocal, False)
+        self.assertEqual(new_data.showRecent, True)
     
     def test_update_settings_single(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newUser.is_active = True
+        new_user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        new_data = UserData.objects.create(user = new_user)
+        new_user.is_active = True
         c = Client()
         c.login(username = 'john', password = 'johnpassword')
         c.post('/polls/settings/', {'opt1':'My'})
-        newData = UserData.objects.get(pk = newUser.pk)
-        self.assertEqual(newData.showMyQuestions, True)
-        self.assertEqual(newData.showLocal, False)
-        self.assertEqual(newData.showRecent, True)
+        new_data = UserData.objects.get(pk = new_user.pk)
+        self.assertEqual(new_data.showMyQuestions, True)
+        self.assertEqual(new_data.showLocal, False)
+        self.assertEqual(new_data.showRecent, True)
         
     def test_update_settings_all(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newUser.is_active = True
+        new_user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        new_data = UserData.objects.create(user = new_user)
+        new_user.is_active = True
         c = Client()
         c.login(username = 'john', password = 'johnpassword')
         c.post('/polls/settings/', {'opt1':'My', 'opt2':'Local', 'opt3':'Popular'})
-        newData = UserData.objects.get(pk = newUser.pk)
-        self.assertEqual(newData.showMyQuestions, True)
-        self.assertEqual(newData.showLocal, True)
-        self.assertEqual(newData.showRecent, False)
+        new_data = UserData.objects.get(pk = new_user.pk)
+        self.assertEqual(new_data.showMyQuestions, True)
+        self.assertEqual(new_data.showLocal, True)
+        self.assertEqual(new_data.showRecent, False)
     
     def test_recent(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newUser.is_active = True
+        new_user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        new_data = UserData.objects.create(user = new_user)
+        new_user.is_active = True
         c = Client()
         c.login(username = 'john', password = 'johnpassword')
-        newQ1 = create_question_time("Old.", -1)
-        newData.answer(newQ1, 0)
-        newQ2 = create_question_time("New.", 0)
-        newData.showRecent = True
-        newData.save()
+        new_q1 = create_question_time("Old.", -1)
+        new_data.answer(new_q1, 0)
+        new_q2 = create_question_time("New.", 0)
+        new_data.showRecent = True
+        new_data.save()
         response = c.get(reverse('polls:index'))
         self.assertQuerysetEqual(
             response.context['latest_question_list'],
@@ -101,16 +101,16 @@ class UserViewTests(TestCase):
 
         
     def test_popular(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newUser.is_active = True
+        new_user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        new_data = UserData.objects.create(user = new_user)
+        new_user.is_active = True
         c = Client()
         c.login(username = 'john', password = 'johnpassword')
-        newQ1 = create_question_time("Has votes.", -1)
-        newData.answer(newQ1, 0)
-        newQ2 = create_question_time("No votes.", 0)
-        newData.showRecent = False
-        newData.save()
+        new_q1 = create_question_time("Has votes.", -1)
+        new_data.answer(new_q1, 0)
+        new_q2 = create_question_time("No votes.", 0)
+        new_data.showRecent = False
+        new_data.save()
         response = c.get(reverse('polls:index'))
         self.assertQuerysetEqual(
             response.context['latest_question_list'],
@@ -118,15 +118,15 @@ class UserViewTests(TestCase):
         )
     
     def test_my(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newUser.is_active = True
+        new_user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        new_data = UserData.objects.create(user = new_user)
+        new_user.is_active = True
         c = Client()
         c.login(username = 'john', password = 'johnpassword')
-        newQ = create_question_time("Not my question.", -1)
-        newData.ask("My question.", "Yes", "No")
-        newData.showMyQuestions = True
-        newData.save()
+        new_q = create_question_time("Not my question.", -1)
+        new_data.ask("My question.", "Yes", "No")
+        new_data.showMyQuestions = True
+        new_data.save()
         response = c.get(reverse('polls:index'))
         self.assertQuerysetEqual(
             response.context['latest_question_list'],
@@ -134,15 +134,15 @@ class UserViewTests(TestCase):
         )
 
     def test_all(self):
-        newUser = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        newData = UserData.objects.create(user = newUser)
-        newUser.is_active = True
+        new_user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        new_data = UserData.objects.create(user = new_user)
+        new_user.is_active = True
         c = Client()
         c.login(username = 'john', password = 'johnpassword')
-        newQ = create_question_time("Not my question.", -1)
-        newData.ask("My question.", "Yes", "No")
-        newData.showMyQuestions = False
-        newData.save()
+        new_q = create_question_time("Not my question.", -1)
+        new_data.ask("My question.", "Yes", "No")
+        new_data.showMyQuestions = False
+        new_data.save()
         response = c.get(reverse('polls:index'))
         self.assertQuerysetEqual(
             response.context['latest_question_list'],
@@ -150,44 +150,44 @@ class UserViewTests(TestCase):
         )
                 
     
-#Test that questions are added to the QuestionsAnswered database table and are
-#properly associated with the user that answered the question.
+# Test that questions are added to the QuestionsAnswered database table and are
+# properly associated with the user that answered the question.
 class QuestionsAnsweredTests(TestCase):
     def test_questions_answered_object_added(self):
-        NewUser = User.objects.create_user('test', 'test@test.com', '12345')
-        NewUserData = UserData.objects.create(user = NewUser)
-        NewUser.is_active = True
+        new_user = User.objects.create_user('test', 'test@test.com', '12345')
+        new_user_data = UserData.objects.create(user = new_user)
+        new_user.is_active = True
         c = Client()
         c.login(username = 'test', password = '12345')
-        TestQuestion = Question.objects.create(question_text = 'Fish?',
+        test_question = Question.objects.create(question_text = 'Fish?',
                                                ans1_text = 'Yes',
                                                ans2_text = 'No',
                                                pub_date = timezone.now())
-        Response = NewUserData.answer(TestQuestion, 0)
-        QuestionsAnsweredByNewUser = QuestionsAnswered.objects.filter(user =
-                                                            NewUserData)
-        #Response should be "True" because the questions has not been answered
-        #by the user before.
-        self.assertEqual(Response, True)
-        #Should be a list containing one entry as one questions was answered by
-        #the user.
-        self.assertEqual(len(QuestionsAnsweredByNewUser), 1)
+        response = new_user_data.answer(test_question, 0)
+        questions_answered_by_new_user = QuestionsAnswered.objects.filter(user =
+                                                            new_user_data)
+        # Response should be "True" because the questions has not been answered
+        # by the user before.
+        self.assertEqual(response, True)
+        # Should be a list containing one entry as one questions was answered by
+        # the user.
+        self.assertEqual(len(questions_answered_by_new_user), 1)
 
-#Test that questions are added to the QuestionsAsked database table and are
-#properly assocaited with the user that asked the question.
+# Test that questions are added to the QuestionsAsked database table and are
+# properly assocaited with the user that asked the question.
 class QuestionsAskedTests(TestCase):
     def test_questions_asked_object_added(self):
-        NewUser = User.objects.create_user('test', 'test@test.com', '12345')
-        NewUserData = UserData.objects.create(user = NewUser)
-        NewUser.is_active = True
+        new_user = User.objects.create_user('test', 'test@test.com', '12345')
+        new_user_data = UserData.objects.create(user = new_user)
+        new_user.is_active = True
         c = Client()
         c.login(username = 'test', password = '12345')
-        #Create a new question and add it to the Question and QuestionAsked
-        #database tables.
-        NewUserData.ask('Fish?', 'Yes', 'No')
-        #Retrieve the question from the QuestionAsked database table
-        QuestionsAskedByTestUser = QuestionsAsked.objects.filter(user =
-                                                            NewUserData)
-        #Should be a list containing one entry as one questions was asked by
-        #the user.
-        self.assertEqual(len(QuestionsAskedByTestUser), 1)
+        # Create a new question and add it to the Question and QuestionAsked
+        # database tables.
+        new_user_data.ask('Fish?', 'Yes', 'No')
+        # Retrieve the question from the QuestionAsked database table.
+        questions_asked_by_test_user = QuestionsAsked.objects.filter(user =
+                                                            new_user_data)
+        # Should be a list containing one entry as one questions was asked by
+        # the user.
+        self.assertEqual(len(questions_asked_by_test_user), 1)
