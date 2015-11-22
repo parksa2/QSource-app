@@ -1,9 +1,7 @@
 from django.contrib import admin
-
 from .models import Question
 
-    
-    
+# Allow questions to be added via the admin side of QSource.
 class QuestionAdmin(admin.ModelAdmin):
     fieldsets = [ 
         (None, {'fields': ['question_text', 'ans1_text', 'ans2_text']}),

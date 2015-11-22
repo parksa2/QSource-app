@@ -2,6 +2,8 @@ from django.conf.urls import url
 
 from . import views 
 
+# Regular expressions that determine the possible patterns that a URL can match.
+# If a URL matches one of the given patterns, the appropriate method is called.
 urlpatterns = [
     
     url(r'^$', views.IndexView.as_view(), name='index'),
