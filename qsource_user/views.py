@@ -5,16 +5,12 @@ from .forms import ContactForm
 from polls.views import IndexView
 from django.shortcuts import redirect
 
-
-# Create your views here.
-
+# View for the "Home" page.
 def home(request):
     
     title = 'Sign Up to our Newsletter' 
     if request.user.is_authenticated():
         return redirectFeed()
-    
-    #add a form
     
     #if request.method == "POST":
     #    print request.POST
@@ -43,13 +39,14 @@ def home(request):
     
     return render(request, "home.html", context)
     
+# View for the "About" page.
 def about(request):
     template_name='about_page.html'
     context={}
     
     return render(request, "about_page.html", context)
     
-
+# View for the "Contact Us" page.
 def contact(request):
     title = 'Contact Us'
     title_align_center = True
@@ -84,7 +81,7 @@ def contact(request):
     
     return render(request, "forms.html", context)
 
-    
+# Function to redirect a user to the feed.    
 def redirectFeed():
     return redirect('polls:index', permanent=True)
     
