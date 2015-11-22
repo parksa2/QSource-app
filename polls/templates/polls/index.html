@@ -4,6 +4,7 @@
 {% include 'navbar.html' %}
 {% include "javascript.html" %}
 
+<!-- Style specifications to make page design cohesive -->
 <style>
 {% block style %}
 .navbar-static-top{
@@ -21,12 +22,16 @@
 {% block jumbotron %}
 <div class="jumbotron">
   <div class="container">
+    <!-- Menu bar: a collapsible row on the Boorstrap grid -->
     <div class="row">
       <div class = "col-sm-8">
         <form action="{% url 'polls:settings' %}" method="post">
+        <!-- Security feature prevents calls from outside sources -->
         {% csrf_token %}       
         <div id="menu" class="collapse">
+          <!-- Toggle buttons between My Questions and All Questions -->
           <div class="btn-group-vertical" data-toggle="buttons" style = "margin: 20px;">
+            <!-- if statements activate buttons according to different settings -->
             {% if not user_my %}
             <label class="btn btn-primary active active">
             {% else %}
@@ -40,6 +45,7 @@
             {% endif %}
             <input type="radio" name = "opt1" id = 2 value = "My">My questions</label>
           </div>
+          <!-- Toggle buttons between Local and Global -->
           <div class="btn-group-vertical" data-toggle="buttons" style = "margin: 20px;">
             {% if user_local %}
             <label class="btn btn-primary active active">
@@ -54,6 +60,7 @@
             {% endif %}
             <input type="radio" name = "opt2" value = "Global">Global</label>
           </div>
+          <!-- Toggle buttons between Recent and Popular -->
           <div class="btn-group-vertical" data-toggle="buttons" style = "margin: 20px;">
             {% if user_recent %}
             <label class="btn btn-primary active active">
@@ -74,33 +81,26 @@
       </div>
     </div>
     <div class="row">  
-      <div class='col-md-2'></div> <!-- is there a better way to center? -->
-      <div class='col-md-8'>            
-      <!-- <p>QSource <i class="fa fa-question-circle fa-3x"></i></p>  --> <!-- Question icon -->        
+      <div class='col-md-2'></div> 
+      <div class='col-md-8'>                 
       <a href="{% url 'polls:question' %}"><h2 style="color:red">Ask a Question</h2></a>
-      <!--<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" /> -->
-      <!--replaced by: -->
       <link rel="stylesheet" type="text/css" href="{% static 'QSource/custom.css' %}" />
       
+      <!-- Display list of questions -->
       {% if latest_question_list %}
           <ul>
-      {% for question in latest_question_list %}            
+      {% for question in latest_question_list %}   
+            <!-- Format questions in centered panels -->
             <div class="panel panel-info">
               <div class="panel-heading">
-                <p><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></p>
+                <p><a href="{% url 'polls:results' question.id %}">{{ question.question_text }}</a></p>
                 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
                 <form action="{% url 'polls:vote' question.id %}" method="post">
                 
-                {% csrf_token %}            
+                {% csrf_token %}    
+                <!-- A click on either choice should submit a request -->
                 <button type="submit" class="btn btn-info" name="ans" value=0 >{{ question.ans1_text }}</button>
                 <button type="submit" class="btn btn-info" name="ans" value=1 >{{ question.ans2_text }}</button>
-                <!-- <input type="radio" name="ans" id=1 value=0 />        
-                <label for=1>{{ question.ans1_text }}</label><br />
-
-                <input type="radio" name="ans" id=2 value=1 />
-                <label for=2>{{ question.ans2_text }}</label><br />
-                <p>
-                <input class='btn btn-default' type='submit' value='Vote' />       -->  
                 </p>
                  
                 </form>      
