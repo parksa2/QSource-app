@@ -26,15 +26,10 @@ class UserData(models.Model):
         return self.user.username
     
     def answer(self, question, choice_num):
-        asked_already = QuestionsAnswered.objects.filter(user = self, questionID = question.pk)
-        if not asked_already:
-            newAns = QuestionsAnswered.objects.create(user = self, questionID = question.pk)
-            newAns.save()
-            question.vote(choice_num)
-            question.save()
-            return True
-        else:
-            return False
+        newAns = QuestionsAnswered.objects.create(user = self, questionID = question.pk)
+        newAns.save()
+        question.vote(choice_num)
+        question.save()
         
     def ask(self, new_question_text, option1, option2):
         newQuestion = Question.objects.create(question_text = new_question_text,
