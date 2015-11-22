@@ -9,26 +9,19 @@ from django.shortcuts import redirect
 from qsource_user.models import *
 from django.contrib.auth.models import User
 
-# Main view for the app. Loads question feed according to user settings
+
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'    
-    # Because get_queryset and get_context_data do not access the request,
-    #   the relevant user data is stored in a member variable by get()
     user_data = 0
 
-    # Extend inherited get() function by redirecting if not logged in
-    #   and saving user's settings
     def get(self, request, *args, **kwargs):
         if (request.user.is_authenticated() != True):
             return redirectHome()
         else:
             self.user_data = get_data_or_create(request.user)
             return super(IndexView, self).get(self, request, *args, **kwargs)
-    
-    # Extend inherited get_context_data by adding additional context varibles
-    #   representing user settings. This allows the html to access the user's options
-    #   for menu display puposes.
+            
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
         context['user_my'] = self.user_data.showMyQuestions
@@ -36,8 +29,6 @@ class IndexView(generic.ListView):
         context['user_recent'] = self.user_data.showRecent
         return context
 
-    # Specify list of questions to display:
-    # Choose appropriate sort/filter functions based on user settings
     def get_queryset(self):        
         if(self.user_data.showRecent):
             if(self.user_data.showMyQuestions):
@@ -50,40 +41,26 @@ class IndexView(generic.ListView):
             else:
                 return self.get_all_global_popular()
             
-    
-    # Return questions asked by this user, most recent first
+           
     def get_my_global_recent(self):
-        my_questions = QuestionsAsked.objects.filter(
-            user = self.user_data, 
-            pub_date__lte=timezone.now()
-        )
-        return Question.objects.filter(
-            pk__in = [my_q.questionID for my_q in my_questions]
-        ).order_by('-pub_date')[:10]
-    
-    # Return questions asked by this user, most popular first
+        my_questions = QuestionsAsked.objects.filter(user = self.user_data)
+        return Question.objects.filter(pk__in = [my_q.questionID for my_q in my_questions]).order_by('-pub_date')[:10]
+        
     def get_my_global_popular(self):
-        my_questions = QuestionsAsked.objects.filter(
-            user = self.user_data, 
-            pub_date__lte=timezone.now()
-        )
-        return Question.objects.filter(
-            pk__in = [my_q.questionID for my_q in my_questions]
-        ).order_by('-votes')[:10]
-    
-    # Return most voted on 10 questions in database
+        my_questions = QuestionsAsked.objects.filter(user = self.user_data)
+        return Question.objects.filter(pk__in = [my_q.questionID for my_q in my_questions]).order_by('-votes')[:10]
+        
     def get_all_global_popular(self):
-        return Question.objects.filter( 
+        return Question.objects.filter(
             pub_date__lte=timezone.now()
         ).order_by('-votes')[:10]
-    
-    # Return most recent 10 questions in database
+        
     def get_all_global_recent(self):
+        #"""Return the last five published questions."""
         return Question.objects.filter(
             pub_date__lte=timezone.now()
         ).order_by('-pub_date')[:10]
 
-# View and vote on single question
 class DetailView(generic.DetailView):
     model = Question
     template_name = 'polls/detail.html'
@@ -97,53 +74,38 @@ class DetailView(generic.DetailView):
     def get_queryset(self):
         return Question.objects.filter(pub_date__lte=timezone.now())
 
-# Show results for single question
 class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
     
     def get(self, request, *args, **kwargs):
-        user_data = get_data_or_create(request.user)
-        
-        if (not request.user.is_authenticated()
-            or not QuestionsAnswered.objects.filter(
-                user = user_data, 
-                questionID = self.get_object().pk
-            ).exists()
-        ):
+        if (request.user.is_authenticated() != True):
             return redirectHome()
         else:
             return super(ResultsView, self).get(self, request, *args, **kwargs)
     
-# Handle POST requests for a new vote 
-# Called from form in index.html or detail.html  
+    
 def vote(request, question_id):
     p = get_object_or_404(Question, pk=question_id)
     user_data = get_data_or_create(request.user)
     ans_num = request.POST.get('ans', -1)
-    # Responsibility for modifying data is passed off to relevant UserData 
     user_data.answer(p, ans_num)  
     return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
 
-# Recieve request to publish a new question
 def GetQuestion(request):
     if request.method == 'POST':
         form = QuestionForm(request.POST or None)
         if form.is_valid():
-            # Get info from request
             new_question_text = form.cleaned_data.get("question_text")            
             option1 = form.cleaned_data.get("option1")            
             option2 = form.cleaned_data.get("option2")         
             user_data = get_data_or_create(request.user)
-            # Pass off responsibility for new question creation to UserData
             user_data.ask(new_question_text, option1, option2)
             return HttpResponseRedirect('/polls/')
     else:
         form = QuestionForm()
     return render(request, 'question.html', {'form': form})
     
-# Return a user's data or, if this is the first time the feed is loaded,
-#   generate a new UserData object with default settings
 def get_data_or_create(myuser):
     if(hasattr(myuser, 'data') != True):
         #generate a default and proceed
@@ -153,16 +115,12 @@ def get_data_or_create(myuser):
         
     else:
         return myuser.data
- 
-# Change any number of user settings 
-# Called from form in index.html
+    
 def settings(request):
-    # Get info from request
     opt1_str = request.POST.get('opt1', "")
     opt2_str = request.POST.get('opt2', "")
     opt3_str = request.POST.get('opt3', "")
     thisUser = get_data_or_create(request.user)
-    # Change appropriate settings
     if(opt1_str == "My"):
         thisUser.showMyQuestions = True
     elif(opt1_str == "All"):
@@ -176,8 +134,7 @@ def settings(request):
     elif(opt3_str == "Popular"):
         thisUser.showRecent = False        
     thisUser.save()
-    return redirect('index', permanent = True)
-    
-#helper function to redirect to homepage when user is not logged in
-def redirectHome():
     return redirect('home', permanent = True)
+    
+def redirectHome():
+    return redirect('home', permanent=True)
