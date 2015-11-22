@@ -11,7 +11,6 @@ from .models import Question
 # QuestionMethodTests contains tests to test the methods associated with the
 # Question model.
 class QuestionMethodTests(TestCase):
-
     def test_was_published_recently_with_future_question(self):
         """
         was_published_recently() should return False for questions whose

@@ -1,6 +1,7 @@
 from django import forms
 
-
+# Form for generating the HTML so that a user can input text into the input
+# fields associated with the "Contact Us" page.
 class ContactForm(forms.Form):
     full_name = forms.CharField(required=False)
     email = forms.EmailField()
@@ -24,5 +25,3 @@ class ContactForm(forms.Form):
         # username = self.cleaned_data.get('username')
         # write validation code here
         # return username
-        
-    

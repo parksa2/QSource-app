@@ -14,7 +14,7 @@ from django.utils import timezone
     # def _unicode_(self): #Python 3.3 is _str_
         # return self.email
         
-        
+# The UserData model to holds all of the data associated with a user.
 class UserData(models.Model):
     user = models.OneToOneField(User, primary_key = True, related_name = "data")
     showMyQuestions = models.BooleanField(default = False)
@@ -46,10 +46,16 @@ class UserData(models.Model):
                                                 questionID = newQuestion.pk)
         asked.save() 
 
+# The QuestionsAnswered model associates each question with a user and stores it
+# when a user answers a question. This data is used to prohibit a user from
+# answering the same question multiple times.
 class QuestionsAnswered(models.Model):
     user = models.ForeignKey(UserData)
     questionID = models.IntegerField()
 
+# The QuestionsAsked model associates each question with a user and stores it
+# when a user asks a question. This data is used to display to the user the
+# questions that they have asked as a sorting option available to in the feed.
 class QuestionsAsked(models.Model):
     user = models.ForeignKey(UserData)
     questionID = models.IntegerField()
