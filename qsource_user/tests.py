@@ -165,7 +165,7 @@ class QuestionsAnsweredTests(TestCase):
         c = Client()
         new_user = new_user_login(c)
         new_user_data = UserData.objects.get(pk = new_user.pk)
-        TestQuestion = Question.objects.create(question_text = 'Fish?',
+        test_question = Question.objects.create(question_text = 'Fish?',
                                                ans1_text = 'Yes',
                                                ans2_text = 'No',
                                                pub_date = timezone.now())
