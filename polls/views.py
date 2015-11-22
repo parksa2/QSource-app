@@ -101,7 +101,12 @@ class DetailView(generic.DetailView):
 class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
-    
+
+    def get_context_data(self, **kwargs):
+        context = super(ResultsView, self).get_context_data(**kwargs)    
+        context['already_answered'] = False
+        return context
+        
     def get(self, request, *args, **kwargs):
         user_data = get_data_or_create(request.user)
         
@@ -122,8 +127,11 @@ def vote(request, question_id):
     user_data = get_data_or_create(request.user)
     ans_num = request.POST.get('ans', -1)
     # Responsibility for modifying data is passed off to relevant UserData 
-    user_data.answer(p, ans_num)  
-    return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
+    success = user_data.answer(p, ans_num)  
+    if(success):
+        return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
+    else:
+        return render( request, 'polls/results.html', {'already_answered':True, 'question':p})
 
 # Recieve request to publish a new question
 def GetQuestion(request):

@@ -22,9 +22,13 @@
     <div class="container">
     <div class="row">
         <div class='col-sm-6'>
-
-        <!--<h2>{{ question.question_text }}</h2> -->
-        <p>Results <i class="fa fa-question-circle fa-3x"></i></p>  <!-- Question icon -->
+        {% if already_answered %}
+        <div class = "alert alert-warning" >
+            <strong>Warning: </strong>You already answered this question. Additional votes are not counted.
+        </div>
+        {% endif %}
+        <h2>{{ question.question_text }}</h2>
+        <p>Results</p>
 
         <ul>
 
