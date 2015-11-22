@@ -52,6 +52,14 @@ class QuestionMethodTests(TestCase):
         self.assertEqual(q.ans2_votes, 1)
         self.assertEqual(q.votes, 1)
         
+    def test_vote_invalid_choice(self):
+        q = Question.objects.create(question_text = "Anybody out there?", pub_date = timezone.now())
+        q.vote(5)
+        self.assertEqual(q.ans1_votes, 0)
+        self.assertEqual(q.ans2_votes, 0)
+        self.assertEqual(q.votes, 0)
+        
+        
 def create_question(question_text, days):
     """
     Creates a question with the given `question_text` published the given
