@@ -56,20 +56,20 @@ class IndexView(generic.ListView):
     def get_my_global_recent(self):
         my_questions = QuestionsAsked.objects.filter(
             user = self.user_data, 
-            pub_date__lte=timezone.now()
         )
         return Question.objects.filter(
-            pk__in = [my_q.questionID for my_q in my_questions]
+            pk__in = [my_q.questionID for my_q in my_questions],
+            pub_date__lte=timezone.now()
         ).order_by('-pub_date')[:10]
     
     # Return the questions asked by this user, most popular first.
     def get_my_global_popular(self):
         my_questions = QuestionsAsked.objects.filter(
             user = self.user_data, 
-            pub_date__lte=timezone.now()
         )
         return Question.objects.filter(
-            pk__in = [my_q.questionID for my_q in my_questions]
+            pk__in = [my_q.questionID for my_q in my_questions],
+            pub_date__lte=timezone.now()
         ).order_by('-votes')[:10]
     
     # Return the most voted on 10 questions in the database.
@@ -187,7 +187,7 @@ def settings(request):
     elif(opt3_str == "Popular"):
         thisUser.showRecent = False        
     thisUser.save()
-    return redirect('index', permanent = True)
+    return redirect('polls:index', permanent = True)
     
 # Redirect a user to the homepage when the user is not logged in.
 def redirectHome():
