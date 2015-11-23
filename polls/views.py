@@ -55,7 +55,7 @@ class IndexView(generic.ListView):
     # Return the questions asked by this user, most recent first.
     def get_my_global_recent(self):
         my_questions = QuestionsAsked.objects.filter(
-            user = self.user_data, 
+            user = self.user_data
         )
         return Question.objects.filter(
             pk__in = [my_q.questionID for my_q in my_questions],
@@ -65,7 +65,7 @@ class IndexView(generic.ListView):
     # Return the questions asked by this user, most popular first.
     def get_my_global_popular(self):
         my_questions = QuestionsAsked.objects.filter(
-            user = self.user_data, 
+            user = self.user_data
         )
         return Question.objects.filter(
             pk__in = [my_q.questionID for my_q in my_questions],
